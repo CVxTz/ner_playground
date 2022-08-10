@@ -42,14 +42,13 @@ def test_tokenize_2():
 def test_generate_labeled_tokens():
     text_1 = "Hello, my name is mario."
     labels_1 = [("A", 0, 6), ("A", 7, 9), ("X", 15, 23)]
-    expected_label_sequence = ["B-A", "I-A", "I-A", "O", "B-X", "I-X", "O"]
+    expected_label_sequence = ["B-A", "I-A", "B-A", "O", "B-X", "I-X", "O"]
     tokens = generate_labeled_tokens(text=text_1, labels=labels_1)[1:-1]
     assert [token.bio_label for token in tokens] == expected_label_sequence
 
     text_2 = "Hello, my name is mario."
     labels_2 = [("A", 5, 6), ("A", 7, 9), ("X", 15, 24)]
-    expected_label_sequence = ["O", "B-A", "I-A", "O", "B-X", "I-X", "I-X"]
-    # TODO fix case where two successive entities have the same label entities
+    expected_label_sequence = ["O", "B-A", "B-A", "O", "B-X", "I-X", "I-X"]
     tokens = generate_labeled_tokens(text=text_2, labels=labels_2)[1:-1]
     assert [token.bio_label for token in tokens] == expected_label_sequence
 

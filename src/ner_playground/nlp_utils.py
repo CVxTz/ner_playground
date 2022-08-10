@@ -41,6 +41,7 @@ class Token:
             f"S: {self.start_index} / "
             f"E: {self.end_index} / "
             f"RL: {self.raw_label} / "
+            f"CL: {self.clean_label} / "
             f"BIO: {self.bio_label} / "
             f"W: {self.weight}"
         )
@@ -48,6 +49,10 @@ class Token:
     @property
     def bio_idx(self):
         return LABEL_MAPPING[self.bio_label]
+
+    @property
+    def clean_label(self):
+        return re.sub(r"\s#\d+$", "", self.raw_label)
 
     def as_dict(self):
         return {
@@ -88,8 +93,8 @@ def generate_labeled_tokens(text: str, labels: List[Tuple[str, int, int]]):
 
     char_label = ["O"] * len(text)
 
-    for label, discourse_start, discourse_end in labels:
-        char_label[discourse_start:discourse_end] = [label] * (
+    for i, (label, discourse_start, discourse_end) in enumerate(labels):
+        char_label[discourse_start:discourse_end] = [f"{label} #{i}"] * (
             discourse_end - discourse_start
         )
 
@@ -103,15 +108,15 @@ def generate_labeled_tokens(text: str, labels: List[Tuple[str, int, int]]):
     for i, token in enumerate(tokens):
         if token.raw_label != "O":
             if i == 0:
-                token.bio_label = "B-" + token.raw_label
+                token.bio_label = "B-" + token.clean_label
 
             else:
                 if tokens[i - 1].raw_label == tokens[i].raw_label:
-                    token.bio_label = "I-" + token.raw_label
+                    token.bio_label = "I-" + token.clean_label
                 else:
-                    token.bio_label = "B-" + token.raw_label
+                    token.bio_label = "B-" + token.clean_label
         else:
-            token.bio_label = token.raw_label
+            token.bio_label = token.clean_label
 
     return tokens
 
