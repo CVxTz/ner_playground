@@ -144,3 +144,25 @@ def group_tokens_by_entity(tokens: List[Token]):
             block_tokens[-1].append(token)
 
     return block_tokens
+
+
+def decode_labeled_tokens(tokens: List[Token], full_text: str):
+    """
+    decode labeled tokens into word indexes
+
+    :param tokens:
+    :param full_text:
+    :return:
+    """
+    block_tokens = group_tokens_by_entity(tokens=tokens)
+
+    labels = []
+    texts = []
+    for block in block_tokens:
+        start = min(token.start_index for token in block)
+        end = max(token.end_index for token in block)
+        label = block[0].clean_label
+        labels.append((label, start, end))
+        texts.append(full_text[start:end])
+
+    return labels, texts
