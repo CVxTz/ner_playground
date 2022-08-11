@@ -78,17 +78,14 @@ class NerModel(pl.LightningModule):
         return self._step(batch, batch_idx, name="test")
 
     def _step(self, batch, batch_idx, name="train"):
-        x, y, w = batch
+        x, y = batch
 
         y_hat = self(x)
 
         y_hat = y_hat.reshape(-1, y_hat.size(2))
         y = y.view(-1)
-        w = w.view(-1)
 
-        loss_v = F.cross_entropy(y_hat, y, reduction="none")
-
-        loss = (loss_v * w).sum() / w.sum()
+        loss = F.cross_entropy(y_hat, y, reduction="mean")
 
         _, predicted = torch.max(y_hat, 1)
 
@@ -113,3 +110,9 @@ class NerModel(pl.LightningModule):
             "frequency": 1,
         }
         return [opt], [lr_schedulers]
+
+
+bert = BertModel(config=CONFIG)
+
+for name, param in bert.named_parameters():
+    print(name)

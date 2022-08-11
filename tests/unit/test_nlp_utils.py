@@ -6,7 +6,7 @@ from ner_playground.nlp_utils import (
     TOKENIZER,
     generate_labeled_tokens,
     tokenize,
-    decode_labeled_tokens
+    decode_labeled_tokens,
 )
 
 fake = Faker()

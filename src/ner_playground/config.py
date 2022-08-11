@@ -38,5 +38,3 @@ SEP = "[SEP]"
 PAD_IDX = TOKENIZER.pad_token_id
 CLS_IDX = TOKENIZER.cls_token_id
 SEP_IDX = TOKENIZER.sep_token_id
-
-print(TOKENIZER.encode_plus("Hello word!", return_offsets_mapping=True))

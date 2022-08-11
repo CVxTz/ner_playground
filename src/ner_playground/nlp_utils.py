@@ -1,18 +1,7 @@
 import re
 from typing import Dict, List, Tuple
 
-from ner_playground.config import LABEL_MAPPING, TOKENIZER, SEP, SEP_IDX, CLS, CLS_IDX
-
-
-class Word:
-    def __init__(self, word: str, index: int, start_index: int, end_index: int):
-        self.word = word
-        self.index = index
-        self.start_index = start_index
-        self.end_index = end_index
-
-    def __repr__(self):
-        return f"W: {self.word} / I: {self.index} / S: {self.start_index} / E: {self.end_index}"
+from ner_playground.config import LABEL_MAPPING, TOKENIZER
 
 
 class Token:
