@@ -10,9 +10,8 @@ from ner_playground.config import LABEL_MAPPING, PAD_IDX
 CONFIG_PATH = Path(__file__).parents[2] / "bert_model" / "bert_config.json"
 CONFIG = BertConfig.from_json_file(CONFIG_PATH)
 
-from transformers import get_cosine_schedule_with_warmup
-
 import torch
+from transformers import get_cosine_schedule_with_warmup
 
 
 def masked_accuracy(y_true: torch.Tensor, y_pred: torch.Tensor, mask):
@@ -60,7 +59,12 @@ class NerModel(pl.LightningModule):
         self.out_linear = nn.Linear(CONFIG.hidden_size, n_classes)
 
     def forward(self, x):
-        x = self.bert(x).last_hidden_state  # [batch, Seq_len, CONFIG.hidden_size]
+
+        mask = (x != self.pad_idx).int()
+        x = self.bert(
+            x, attention_mask=mask, encoder_attention_mask=mask
+        ).last_hidden_state
+        # [batch, Seq_len, CONFIG.hidden_size]
 
         x = self.do(x)
 
@@ -112,7 +116,7 @@ class NerModel(pl.LightningModule):
         return [opt], [lr_schedulers]
 
 
-bert = BertModel(config=CONFIG)
-
-for name, param in bert.named_parameters():
-    print(name)
+# bert = BertModel(config=CONFIG)
+#
+# for name, param in bert.named_parameters():
+#     print(name)

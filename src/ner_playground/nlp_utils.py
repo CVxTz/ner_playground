@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional
 
 from ner_playground.config import LABEL_MAPPING, TOKENIZER
 
@@ -11,9 +11,8 @@ class Token:
         index: int,
         start_index: int,
         end_index: int,
-        raw_label: str = "O",
-        bio_label: str = "O",
-        weight: float = 1,
+        raw_label: Optional[str] = None,
+        bio_label: Optional[str] = None,
     ):
         self.token = token
         self.index = index
@@ -21,7 +20,6 @@ class Token:
         self.end_index = end_index
         self.raw_label = raw_label
         self.bio_label = bio_label
-        self.weight = weight
 
     def __repr__(self):
         return (
@@ -31,8 +29,7 @@ class Token:
             f"E: {self.end_index} / "
             f"RL: {self.raw_label} / "
             f"CL: {self.clean_label} / "
-            f"BIO: {self.bio_label} / "
-            f"W: {self.weight}"
+            f"BIO: {self.bio_label}"
         )
 
     @property
@@ -51,7 +48,6 @@ class Token:
             "end_index": self.end_index,
             "raw_label": self.raw_label,
             "bio_label": self.bio_label,
-            "weight": self.weight,
         }
 
     @classmethod
@@ -77,21 +73,26 @@ def most_frequent(list_of_labels):
     return max(set(list_of_labels), key=list_of_labels.count)
 
 
-def generate_labeled_tokens(text: str, labels: List[Tuple[str, int, int]]):
+def generate_labeled_tokens(text: str, labels: List[Dict]):
     tokens = tokenize(text=text)
 
     char_label = ["O"] * len(text)
 
-    for i, (label, discourse_start, discourse_end) in enumerate(labels):
-        char_label[discourse_start:discourse_end] = [f"{label} #{i}"] * (
-            discourse_end - discourse_start
-        )
+    for i, span in enumerate(labels):
+
+        label = span["label"]
+        start = span["start"]
+        end = span["end"]
+
+        char_label[start:end] = [f"{label} #{i}"] * (end - start)
 
     for i, token in enumerate(tokens):
         if token.start_index != token.end_index:
             token.raw_label = most_frequent(
                 char_label[token.start_index : token.end_index]
             )
+        else:
+            token.raw_label = "O"
 
     # BIO labels
     for i, token in enumerate(tokens):
@@ -135,23 +136,20 @@ def group_tokens_by_entity(tokens: List[Token]):
     return block_tokens
 
 
-def decode_labeled_tokens(tokens: List[Token], full_text: str):
+def decode_labeled_tokens(tokens: List[Token]):
     """
     decode labeled tokens into word indexes
 
     :param tokens:
-    :param full_text:
     :return:
     """
     block_tokens = group_tokens_by_entity(tokens=tokens)
 
     labels = []
-    texts = []
     for block in block_tokens:
         start = min(token.start_index for token in block)
         end = max(token.end_index for token in block)
-        label = block[0].clean_label
-        labels.append((label, start, end))
-        texts.append(full_text[start:end])
+        label = block[0].bio_label.split("-")[-1]
+        labels.append({"label": label, "start": start, "end": end})
 
-    return labels, texts
+    return labels

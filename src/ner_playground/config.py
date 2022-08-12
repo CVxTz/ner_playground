@@ -2,7 +2,6 @@ from pathlib import Path
 
 from transformers import BertTokenizerFast
 
-
 print(Path(__file__).parents[2])
 
 TOKENIZER_PATH = Path(__file__).parents[2] / "bert_model"
@@ -27,6 +26,7 @@ i = 1
 for c in CLASSES:
     LABEL_MAPPING[f"B-{c}"] = i
     LABEL_MAPPING[f"I-{c}"] = i + 1
+    i += 2
 
 
 INV_LABEL_MAPPING = {v: k for k, v in LABEL_MAPPING.items()}

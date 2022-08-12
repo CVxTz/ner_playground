@@ -1,5 +1,6 @@
-from nervaluate import Evaluator
 from pprint import pprint
+
+from nervaluate import Evaluator
 
 true = [
     [{"label": "A", "start": 2, "end": 4}],

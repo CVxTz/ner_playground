@@ -1,12 +1,10 @@
-from pathlib import Path
 import json
+from pathlib import Path
 
 import pandas as pd
 from tqdm import tqdm
 
-from ner_playground.nlp_utils import (
-    generate_labeled_tokens,
-)
+from ner_playground.nlp_utils import generate_labeled_tokens
 
 
 def prepare_dataset(data: pd.DataFrame):
@@ -16,10 +14,10 @@ def prepare_dataset(data: pd.DataFrame):
     for idx, row in tqdm(data.iterrows()):
         text = row["ingredients"]
         spans = json.loads(row["ingredients_entities"])
+        for span in spans:
+            span["label"] = span["type"]
 
-        labels = [(span["type"], span["start"], span["end"]) for span in spans]
-
-        tokens = generate_labeled_tokens(text, labels=labels)
+        tokens = generate_labeled_tokens(text, labels=spans)
 
         full_samples.append(
             {

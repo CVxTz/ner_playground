@@ -2,7 +2,6 @@ import os
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-import pathlib
 from functools import partial
 from pathlib import Path
 
@@ -15,9 +14,9 @@ from sklearn.model_selection import train_test_split
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 
+from ner_playground.config import PAD_IDX
 from ner_playground.data_preparation import prepare_dataset
 from ner_playground.models import NerModel
-from ner_playground.config import PAD_IDX
 
 MAX_LEN = 256
 
@@ -60,8 +59,6 @@ if __name__ == "__main__":
     BERT_PATH = BASE_PATH / "bert_model" / "pytorch_model.bin"
 
     df = pd.read_csv(BASE_PATH / "data" / "TASTEset.csv")
-
-    encoded_samples = prepare_dataset(data=df)
 
     full_samples = prepare_dataset(data=df)
 
