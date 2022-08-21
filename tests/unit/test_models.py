@@ -1,10 +1,10 @@
 import torch
 
-from ner_playground.models import NerModel
+from ner_playground.models import BertNerModel
 
 
 def test_model():
-    model = NerModel(n_classes=20)
+    model = BertNerModel(n_classes=20)
 
     x = torch.arange(0, 20, dtype=torch.long).view(1, 20)
 

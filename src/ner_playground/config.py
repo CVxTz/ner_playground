@@ -38,3 +38,5 @@ SEP = "[SEP]"
 PAD_IDX = TOKENIZER.pad_token_id
 CLS_IDX = TOKENIZER.cls_token_id
 SEP_IDX = TOKENIZER.sep_token_id
+
+N_VOCAB = len(TOKENIZER.get_vocab())

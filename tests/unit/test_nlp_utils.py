@@ -1,8 +1,12 @@
 from faker import Faker
 
 from ner_playground.config import CLS, SEP
-from ner_playground.nlp_utils import (TOKENIZER, decode_labeled_tokens,
-                                      generate_labeled_tokens, tokenize)
+from ner_playground.nlp_utils import (
+    TOKENIZER,
+    decode_labeled_tokens,
+    generate_labeled_tokens,
+    tokenize,
+)
 
 fake = Faker()
 

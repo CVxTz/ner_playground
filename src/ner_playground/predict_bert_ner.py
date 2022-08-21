@@ -9,9 +9,8 @@ from tqdm import tqdm
 
 from ner_playground.config import CLASSES, INV_LABEL_MAPPING
 from ner_playground.data_preparation import prepare_dataset
-from ner_playground.models import NerModel
-from ner_playground.nlp_utils import (decode_labeled_tokens,
-                                      generate_labeled_tokens)
+from ner_playground.models import BertModelModel
+from ner_playground.nlp_utils import decode_labeled_tokens, generate_labeled_tokens
 
 MAX_LEN = 256
 
@@ -27,13 +26,13 @@ if __name__ == "__main__":
 
     train, val = train_test_split(full_samples, random_state=1337, test_size=0.1)
 
-    model = NerModel(
+    model = BertModelModel(
         lr=5e-5,
     )
 
     model.eval()
 
-    model_path = BASE_PATH / "models" / "ner.ckpt"
+    model_path = BASE_PATH / "models" / "ner-bert.ckpt"
     model.load_state_dict(torch.load(model_path)["state_dict"])
 
     gold_spans = []
@@ -65,6 +64,6 @@ if __name__ == "__main__":
 
     results, results_per_tag = evaluator.evaluate()
 
-    pprint(results)
+    pprint(results["strict"]["f1"])
 
-    pprint(results_per_tag)
+    # pprint(results_per_tag)
