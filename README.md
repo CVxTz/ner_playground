@@ -14,3 +14,8 @@ https://pypi.org/project/nervaluate/
 ## Dataset
 
 https://paperswithcode.com/dataset/tasteset 
+
+## Pretrained weights and config + tokenizer
+
+```python scripts/load_save_bert.py```
+
