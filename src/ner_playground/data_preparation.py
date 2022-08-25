@@ -23,6 +23,7 @@ def prepare_dataset(data: pd.DataFrame):
             {
                 "text": text,
                 "tokens": tokens,
+                "spans": spans
             }
         )
 

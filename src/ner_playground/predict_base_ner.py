@@ -10,7 +10,8 @@ from tqdm import tqdm
 from ner_playground.config import CLASSES, INV_LABEL_MAPPING
 from ner_playground.data_preparation import prepare_dataset
 from ner_playground.models import BaseNerModel
-from ner_playground.nlp_utils import decode_labeled_tokens, generate_labeled_tokens
+from ner_playground.nlp_utils import (decode_labeled_tokens,
+                                      generate_labeled_tokens)
 
 MAX_LEN = 256
 

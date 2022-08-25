@@ -1,12 +1,12 @@
-from pathlib import Path
 import math
+from pathlib import Path
 
 import pytorch_lightning as pl
 from torch import nn
 from torch.nn import functional as F
 from transformers import BertConfig, BertModel
 
-from ner_playground.config import LABEL_MAPPING, PAD_IDX, N_VOCAB
+from ner_playground.config import LABEL_MAPPING, N_VOCAB, PAD_IDX
 
 CONFIG_PATH = Path(__file__).parents[2] / "bert_model" / "bert_config.json"
 CONFIG = BertConfig.from_json_file(CONFIG_PATH)
@@ -156,7 +156,7 @@ class BaseNerModel(BaseModel):
         pad_idx=PAD_IDX,
         dropout=0.2,
         d_model=256,
-        n_vocab=N_VOCAB
+        n_vocab=N_VOCAB,
     ):
         super().__init__()
 
@@ -188,7 +188,9 @@ class BaseNerModel(BaseModel):
 
         mask = (x == self.pad_idx).float()
 
-        mask = mask.masked_fill(mask == 1, float('-inf')).masked_fill(mask == 0, float(0.0))
+        mask = mask.masked_fill(mask == 1, float("-inf")).masked_fill(
+            mask == 0, float(0.0)
+        )
 
         x = self.embeddings(x)
         x = self.pos_encoder(x)
